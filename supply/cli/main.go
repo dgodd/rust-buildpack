@@ -1,13 +1,12 @@
 package main
 
 import (
-	_ "rust/hooks"
-	"rust/supply"
 	"os"
 	"path/filepath"
 	"time"
 
 	"github.com/cloudfoundry/libbuildpack"
+	"github.com/dgodd/rust-buildpack/supply"
 )
 
 func main() {
@@ -61,11 +60,11 @@ func main() {
 	}
 
 	s := supply.Supplier{
-		Manifest: manifest,
+		Manifest:  manifest,
 		Installer: installer,
-		Stager:   stager,
-		Command:  &libbuildpack.Command{},
-		Log:      logger,
+		Stager:    stager,
+		Command:   &libbuildpack.Command{},
+		Log:       logger,
 	}
 
 	err = s.Run()

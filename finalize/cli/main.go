@@ -1,12 +1,11 @@
 package main
 
 import (
-	"rust/finalize"
-	_ "rust/hooks"
 	"os"
 	"time"
 
 	"github.com/cloudfoundry/libbuildpack"
+	"github.com/dgodd/rust-buildpack/finalize"
 )
 
 func main() {
