@@ -1,6 +1,8 @@
 ---
 language: rust
 default_versions:
+- name: rust
+  version: 1.31.x
 dependency_deprecation_dates:
 dependencies:
 - name: rust

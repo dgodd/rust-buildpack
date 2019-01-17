@@ -1,0 +1,8 @@
+[package]
+name = "simple-test"
+version = "0.0.1"
+description = "a simple webserver."
+edition = "2018"
+
+[dependencies]
+tiny_http = "0.6"

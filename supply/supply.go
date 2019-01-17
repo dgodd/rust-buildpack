@@ -7,30 +7,19 @@ import (
 )
 
 type Stager interface {
-	//TODO: See more options at https://github.com/cloudfoundry/libbuildpack/blob/master/stager.go
-	BuildDir() string
+	AddBinDependencyLink(string, string) error
 	DepDir() string
-	DepsIdx() string
-	DepsDir() string
 }
 
 type Manifest interface {
-	//TODO: See more options at https://github.com/cloudfoundry/libbuildpack/blob/master/manifest.go
-	AllDependencyVersions(string) []string
 	DefaultVersion(string) (libbuildpack.Dependency, error)
 }
 
 type Installer interface {
-	//TODO: See more options at https://github.com/cloudfoundry/libbuildpack/blob/master/installer.go
 	InstallDependency(libbuildpack.Dependency, string) error
-	InstallOnlyVersion(string, string) error
 }
 
-type Command interface {
-	//TODO: See more options at https://github.com/cloudfoundry/libbuildpack/blob/master/command.go
-	Execute(string, io.Writer, io.Writer, string, ...string) error
-	Output(dir string, program string, args ...string) (string, error)
-}
+type Command interface{}
 
 type Supplier struct {
 	Manifest  Manifest
@@ -43,7 +32,50 @@ type Supplier struct {
 func (s *Supplier) Run() error {
 	s.Log.BeginStep("Supplying rust")
 
-	// TODO: Install any dependencies here...
+	dep, err := s.Manifest.DefaultVersion("rust")
+	if err != nil {
+		return err
+	}
+	if err := s.Installer.InstallDependency(dep, s.Stager.DepDir()); err != nil {
+		return err
+	}
+
+	// Create bin and lib links
+	for _, dirType := range []string{"bin", "lib"} {
+		files, err := filepath.Glob(filepath.Join(s.Stager.DepDir(), "rust-*", "*", dirType, "*")
+		if err != nil {
+			return err
+		}
+		for _, file := range files {
+			if fi, err := os.Stat(file); err != nil {
+				return err
+			} else if fi.IsDir() {
+				continue
+			}
+
+			fmt.Println("DG: DEBUG: addDependencyLink:", file, filepath.Join(s.Stager.DepDir(), dirType, filepath.Base(file)))
+			if err := addDependencyLink(file, filepath.Join(s.Stager.DepDir(), dirType, filepath.Base(file))); err != nil {
+				return err
+			}
+		}
+	}
 
 	return nil
+}
+
+func addDependencyLink(dest, src string) error {
+	if err := os.MkdirAll(filepath.Dir(dest), 0755); err != nil {
+		return err
+	}
+
+	relPath, err := filepath.Rel(filepath.Dir(src), dest)
+	if err != nil {
+		return err
+	}
+
+	if runtime.GOOS == "windows" {
+		return os.Link(relPath, filepath.Join(binDir, sourceName))
+	} else {
+		return os.Symlink(relPath, filepath.Join(binDir, sourceName))
+	}
 }
