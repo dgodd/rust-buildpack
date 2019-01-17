@@ -3,7 +3,19 @@ language: rust
 default_versions:
 dependency_deprecation_dates:
 dependencies:
-
+- name: rust
+  version: 1.31.0
+  uri: https://static.rust-lang.org/dist/rust-1.31.0-x86_64-unknown-linux-gnu.tar.gz
+  sha256: 83ef4d94f9aaf11d2bc06007f4e0e3e6
+  cf_stacks:
+  - cflinuxfs2
+  - cflinuxfs3
+- name: rust
+  version: 1.31.0
+  uri: https://static.rust-lang.org/dist/rust-1.31.0-x86_64-pc-windows-gnu.tar.gz
+  sha256: 000183b7f0df56add97ac83c709be5f9
+  cf_stacks:
+  - windows2016
 include_files:
   - README.md
   - VERSION
