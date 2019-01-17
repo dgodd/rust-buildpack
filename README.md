@@ -3,12 +3,6 @@
 ### Building the Buildpack
 To build this buildpack, run the following command from the buildpack's directory:
 
-1. Source the .envrc file in the buildpack directory.
-```bash
-source .envrc
-```
-To simplify the process in the future, install [direnv](https://direnv.net/) which will automatically source .envrc when you change directories.
-
 1. Install buildpack-packager
 ```bash
 ./scripts/install_tools.sh
@@ -28,30 +22,14 @@ cf push my_app [-b BUILDPACK_NAME]
 ```
 
 ### Testing
-Buildpacks use the [Cutlass](https://github.com/cloudfoundry/libbuildpack/cutlass) framework for running integration tests.
 
 To test this buildpack, run the following command from the buildpack's directory:
-
-1. Source the .envrc file in the buildpack directory.
-
-```bash
-source .envrc
-```
-To simplify the process in the future, install [direnv](https://direnv.net/) which will automatically source .envrc when you change directories.
 
 1. Run unit tests
 
 ```bash
 ./scripts/unit.sh
 ```
-
-1. Run integration tests
-
-```bash
-./scripts/integration.sh
-```
-
-More information can be found on Github [cutlass](https://github.com/cloudfoundry/libbuildpack/cutlass).
 
 ### Reporting Issues
 Open an issue on this project
